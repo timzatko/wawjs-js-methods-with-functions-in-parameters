@@ -1,0 +1,4 @@
+node_modules
+.idea
+output.txt
+output.json
