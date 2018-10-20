@@ -15,6 +15,6 @@ from(request.get(url + '/bm/docs/Web/JavaScript/Reference/Methods_Index'))
 
         fs.writeFileSync('output.json', JSON.stringify(methods));
         fs.writeFileSync('output.txt', names.join('\n'));
-        
+
         console.log('Successful!');
     });

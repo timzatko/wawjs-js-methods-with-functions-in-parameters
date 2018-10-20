@@ -1,6 +1,6 @@
 # wawjs-js-methods-with-functions-in-parameters
 
-This script scrapes [https://developer.mozilla.org](https://developer.mozilla.org) and finds JavaScript methods that have function in parameters.
+This script scrapes [https://developer.mozilla.org](https://developer.mozilla.org) and finds JavaScript methods (only from JS API) that have function in parameters.
 
 # Usage
 
