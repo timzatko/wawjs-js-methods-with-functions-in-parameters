@@ -6,7 +6,7 @@ This script scrapes [https://developer.mozilla.org](https://developer.mozilla.or
 
 ## Run
 1. `npm install`
-1. `npm run start`
+1. `npm start`
 
 ## Output
 Output is stored in `output.txt` and `output.json`.
