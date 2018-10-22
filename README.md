@@ -24,7 +24,7 @@ Array.prototype.some() - callback
 Array.prototype.sort() - compareFunction
 JSON.stringify() - replacer
 Map.prototype.forEach() - callback
-Promise.prototype.catch() - 
+Promise.prototype.catch() - onRejected
 Promise.prototype.finally() - onFinally
 Promise.prototype.then() - onFulfilled, onRejected 
 RegExp.prototype[@@replace]() - function (replacement)

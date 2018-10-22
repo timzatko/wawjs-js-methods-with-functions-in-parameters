@@ -42,7 +42,7 @@ const getMethodInformation = link => {
                     .find('> dt')
                     .toArray()
                     .map(el => ({
-                        name: $('code', el).text(),
+                        name: $(el).find('code').toArray().length ? $('code', el).text() : $(el).text(),
                         description: $(el)
                             .next('dd')
                             .text()
