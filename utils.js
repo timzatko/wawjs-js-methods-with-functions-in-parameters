@@ -12,7 +12,7 @@ const getAllLinksToMethodsPages = () => {
             .find('li > a:nth-child(1)')
             .toArray()
             .map(el => $(el).attr('href'))
-            .map(link => (link.search('https://') === -1 ? `${url}/${link}` : link))
+            .map(link => (link.indexOf('https://') === -1 ? `${url}/${link}` : link))
     );
 };
 
