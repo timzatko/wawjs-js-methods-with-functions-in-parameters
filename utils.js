@@ -1,5 +1,5 @@
-const { map, flatMap, catchError } = require('rxjs/operators');
-const { forkJoin, from, of } = require('rxjs');
+const { map, flatMap } = require('rxjs/operators');
+const { forkJoin, from } = require('rxjs');
 
 const request = require('request-promise-native');
 
@@ -33,39 +33,38 @@ const getMethodInformation = link => {
             .catch(() => resolve(null));
     });
 
-    return from(get)
-        .pipe(
-            catchError(() => {
-                console.error(`Failed to open method page ${link}`);
-                return of(undefined);
-            })
-        )
-        .pipe(
-            map(body => {
-                if (body) {
-                    const name = $('h1', body).text();
-                    const parameters = $('#Parameters', body)
-                        .next('dl')
-                        .find('dd')
-                        .toArray()
-                        .map(el => $(el).text());
+    return from(get).pipe(
+        map(body => {
+            if (body) {
+                const name = $('h1', body).text();
+                const parameters = $('#Parameters', body)
+                    .next('dl')
+                    .find('> dt')
+                    .toArray()
+                    .map(el => ({
+                        name: $('code', el).text(),
+                        description: $(el)
+                            .next('dd')
+                            .text()
+                    }));
 
-                    return { name, parameters, link };
-                }
+                return { name, parameters, link };
+            }
 
-                return null;
-            })
-        );
+            return null;
+        })
+    );
+};
+
+const isParamFunction = description => {
+    const match = pattern => description.match(pattern);
+    return match(/^function/i) || match(/Specifies a function/) || match(/^A function/i);
 };
 
 const filterMethodsWithFunctionParameter = () => {
     return map(methods =>
         methods.filter(method => {
-            return method.parameters.filter(method => {
-                const match = (pattern) => method.match(pattern);
-                return match(/^function/i) || match(/Specifies a function/) || match(/^A function/i);
-
-            }).length;
+            return method.parameters.some(({ description }) => isParamFunction(description));
         })
     );
 };
@@ -74,4 +73,5 @@ module.exports = {
     getAllLinksToMethodsPages,
     getAllMethodsInformation,
     filterMethodsWithFunctionParameter,
+    isParamFunction
 };

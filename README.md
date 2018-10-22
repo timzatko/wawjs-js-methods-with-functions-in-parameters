@@ -12,33 +12,32 @@ This script scrapes [https://developer.mozilla.org](https://developer.mozilla.or
 Output is stored in `output.txt` and `output.json`.
 
 ```
-Array.prototype.every()
-Array.prototype.filter()
-Array.prototype.find()
-Array.prototype.findIndex()
-Array.prototype.forEach()
-Array.prototype.map()
-Array.prototype.reduce()
-Array.prototype.reduceRight()
-Array.prototype.some()
-Array.prototype.sort()
-JSON.stringify()
-Map.prototype.forEach()
-Object.defineProperties()
-Promise.prototype.catch()
-Promise.prototype.finally()
-Promise.prototype.then()
-RegExp.prototype[@@replace]()
-Set.prototype.forEach()
-String.prototype.replace()
-TypedArray.prototype.every()
-TypedArray.prototype.filter()
-TypedArray.prototype.find()
-TypedArray.prototype.findIndex()
-TypedArray.prototype.forEach()
-TypedArray.prototype.map()
-TypedArray.prototype.reduce()
-TypedArray.prototype.reduceRight()
-TypedArray.prototype.some()
-TypedArray.prototype.sort()
+Array.prototype.every() - callback
+Array.prototype.filter() - callback
+Array.prototype.find() - callback
+Array.prototype.findIndex() - callback
+Array.prototype.forEach() - callback
+Array.prototype.map() - callback
+Array.prototype.reduce() - callback
+Array.prototype.reduceRight() - callback
+Array.prototype.some() - callback
+Array.prototype.sort() - compareFunction
+JSON.stringify() - replacer
+Map.prototype.forEach() - callback
+Promise.prototype.catch() - 
+Promise.prototype.finally() - onFinally
+Promise.prototype.then() - onFulfilled, onRejected 
+RegExp.prototype[@@replace]() - function (replacement)
+Set.prototype.forEach() - callback
+String.prototype.replace() - function
+TypedArray.prototype.every() - callback
+TypedArray.prototype.filter() - callback
+TypedArray.prototype.find() - callback
+TypedArray.prototype.findIndex() - callback
+TypedArray.prototype.forEach() - callback
+TypedArray.prototype.map() - callback
+TypedArray.prototype.reduce() - callback
+TypedArray.prototype.reduceRight() - callback
+TypedArray.prototype.some() - callback
+TypedArray.prototype.sort() - compareFunction
 ```
