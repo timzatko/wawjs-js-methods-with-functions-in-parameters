@@ -11,6 +11,7 @@ from(request.get(url + '/bm/docs/Web/JavaScript/Reference/Methods_Index'))
     .pipe(utils.getAllMethodsInformation())
     .pipe(utils.filterMethodsWithFunctionParameter())
     .subscribe(methods => {
+        methods.sort((a, b) => a.name.toString().localeCompare(b.name));
         const names = methods.map(({ name }) => name);
 
         fs.writeFileSync('output.json', JSON.stringify(methods));
