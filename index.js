@@ -5,18 +5,19 @@ const fs = require('fs');
 const url = require('./mozilla-url');
 
 const {
-    getAllLinksToMethodsPages,
+    getAllLinksToMethodsOnPages,
     filterMethodsWithFunctionParameter,
     getAllMethodsInformation,
     isParamFunction
 } = require('./utils');
 
 from(request.get(url + '/bm/docs/Web/JavaScript/Reference/Methods_Index'))
-    .pipe(getAllLinksToMethodsPages())
+    .pipe(getAllLinksToMethodsOnPages())
     .pipe(getAllMethodsInformation())
     .pipe(filterMethodsWithFunctionParameter())
     .subscribe(methods => {
         methods.sort((a, b) => a.name.toString().localeCompare(b.name));
+
         const names = methods.map(
             ({ name, parameters }) =>
                 `${name} - ${parameters

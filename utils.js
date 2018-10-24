@@ -6,25 +6,43 @@ const request = require('request-promise-native');
 const $ = require('cheerio');
 const url = require('./mozilla-url');
 
-const getAllLinksToMethodsPages = () => {
-    return map(body =>
-        $('article', body)
-            .find('li > a:nth-child(1)')
-            .toArray()
-            .map(el => $(el).attr('href'))
-            .map(link => (link.indexOf('https://') === -1 ? `${url}/${link}` : link))
-    );
+const getAllLinksToMethodsOnPage = (body) => {
+    return $('article', body)
+        .find('li > a:nth-child(1)')
+        .toArray()
+        .map(el => $(el).attr('href'))
+        .map(link => (link.indexOf('https://') === -1 ? `${url}/${link}` : link));
+};
+
+const getAllLinksToMethodsOnPages = () => {
+    return map(body => getAllLinksToMethodsOnPage(body));
 };
 
 const getAllMethodsInformation = () => {
     return flatMap(links => {
-        return forkJoin(links.map(link => getMethodInformation(link))).pipe(
+        return forkJoin(links.map(link => getMethodInformationFromPage(link))).pipe(
             map(methods => methods.filter(method => method))
         );
     });
 };
 
-const getMethodInformation = link => {
+const getMethodInformationFromBody = (body) => {
+    const name = $('h1', body).text();
+    const parameters = $('#Parameters', body)
+        .next('dl')
+        .find('> dt')
+        .toArray()
+        .map(el => ({
+            name: $(el).find('code').toArray().length ? $('code', el).text() : $(el).text(),
+            description: $(el)
+                .next('dd')
+                .text()
+        }));
+
+    return { name, parameters };
+};
+
+const getMethodInformationFromPage = link => {
     // temp workaround because error stops the sequence and I don't know how to fix it
     const get = new Promise(resolve => {
         request
@@ -33,30 +51,11 @@ const getMethodInformation = link => {
             .catch(() => resolve(null));
     });
 
-    return from(get).pipe(
-        map(body => {
-            if (body) {
-                const name = $('h1', body).text();
-                const parameters = $('#Parameters', body)
-                    .next('dl')
-                    .find('> dt')
-                    .toArray()
-                    .map(el => ({
-                        name: $(el).find('code').toArray().length ? $('code', el).text() : $(el).text(),
-                        description: $(el)
-                            .next('dd')
-                            .text()
-                    }));
-
-                return { name, parameters, link };
-            }
-
-            return null;
-        })
-    );
+    return from(get)
+        .pipe(map(body => (body ? { ...getMethodInformationFromBody(body), link } : null)))
 };
 
-const isParamFunction = description => {
+const hasMethodFunctionParameter = description => {
     const match = pattern => description.match(pattern);
     return match(/^function/i) || match(/Specifies a function/) || match(/^A function/i);
 };
@@ -64,13 +63,15 @@ const isParamFunction = description => {
 const filterMethodsWithFunctionParameter = () => {
     return map(methods =>
         methods.filter(method => {
-            return method.parameters.some(({ description }) => isParamFunction(description));
+            return method.parameters.some(({ description }) => hasMethodFunctionParameter(description));
         })
     );
 };
 
 module.exports = {
-    getAllLinksToMethodsPages,
+    hasMethodFunctionParameter,
+    getAllLinksToMethodsOnPage,
+    getAllLinksToMethodsOnPages,
     getAllMethodsInformation,
     filterMethodsWithFunctionParameter,
     isParamFunction
