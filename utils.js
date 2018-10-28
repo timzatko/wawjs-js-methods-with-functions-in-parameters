@@ -74,5 +74,4 @@ module.exports = {
     getAllLinksToMethodsOnPages,
     getAllMethodsInformation,
     filterMethodsWithFunctionParameter,
-    isParamFunction
 };

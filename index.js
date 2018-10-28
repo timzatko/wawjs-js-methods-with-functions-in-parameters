@@ -8,7 +8,7 @@ const {
     getAllLinksToMethodsOnPages,
     filterMethodsWithFunctionParameter,
     getAllMethodsInformation,
-    isParamFunction
+    hasMethodFunctionParameter
 } = require('./utils');
 
 from(request.get(url + '/bm/docs/Web/JavaScript/Reference/Methods_Index'))
@@ -21,7 +21,7 @@ from(request.get(url + '/bm/docs/Web/JavaScript/Reference/Methods_Index'))
         const names = methods.map(
             ({ name, parameters }) =>
                 `${name} - ${parameters
-                    .filter(({ description }) => isParamFunction(description))
+                    .filter(({ description }) => hasMethodFunctionParameter(description))
                     .map(param => param.name)
                     .join(', ')}`
         );
