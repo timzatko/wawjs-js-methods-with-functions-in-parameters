@@ -6,7 +6,7 @@ const request = require('request-promise-native');
 const $ = require('cheerio');
 const url = require('./mozilla-url');
 
-const getAllLinksToMethodsOnPage = (body) => {
+const extractAllLinksToMethodsFromBodyPage = (body) => {
     return $('article', body)
         .find('li > a:nth-child(1)')
         .toArray()
@@ -14,8 +14,8 @@ const getAllLinksToMethodsOnPage = (body) => {
         .map(link => (link.indexOf('https://') === -1 ? `${url}/${link}` : link));
 };
 
-const getAllLinksToMethodsOnPages = () => {
-    return map(body => getAllLinksToMethodsOnPage(body));
+const getAllLinksToMethodsOnPage = () => {
+    return map(body => extractAllLinksToMethodsFromBodyPage(body));
 };
 
 const getAllMethodsInformation = () => {
@@ -55,23 +55,24 @@ const getMethodInformationFromPage = link => {
         .pipe(map(body => (body ? { ...getMethodInformationFromBody(body), link } : null)))
 };
 
-const hasMethodFunctionParameter = description => {
+const isMethodParameterAFunction = description => {
     const match = pattern => description.match(pattern);
-    return match(/^function/i) || match(/Specifies a function/) || match(/^A function/i);
+    return !!(match(/^function/i) || match(/Specifies a function/) || match(/^A function/i));
 };
 
 const filterMethodsWithFunctionParameter = () => {
     return map(methods =>
         methods.filter(method => {
-            return method.parameters.some(({ description }) => hasMethodFunctionParameter(description));
+            return method.parameters.some(({ description }) => isMethodParameterAFunction(description));
         })
     );
 };
 
 module.exports = {
-    hasMethodFunctionParameter,
+    isMethodParameterAFunction,
+    getMethodInformationFromBody,
     getAllLinksToMethodsOnPage,
-    getAllLinksToMethodsOnPages,
+    extractAllLinksToMethodsFromBodyPage,
     getAllMethodsInformation,
     filterMethodsWithFunctionParameter,
 };
