@@ -7,6 +7,8 @@ const $ = require('cheerio');
 const url = require('./mozilla-url');
 
 const extractAllLinksToMethodsFromBodyPage = (body) => {
+    console.log('Extracting all links to method pages...');
+
     return $('article', body)
         .find('li > a:nth-child(1)')
         .toArray()
@@ -28,6 +30,8 @@ const getAllMethodsInformation = () => {
 
 const getMethodInformationFromBody = (body) => {
     const name = $('h1', body).text();
+    console.log(name);
+
     const parameters = $('#Parameters', body)
         .next('dl')
         .find('> dt')
@@ -46,7 +50,7 @@ const getMethodInformationFromPage = link => {
     // temp workaround because error stops the sequence and I don't know how to fix it
     const get = new Promise(resolve => {
         request
-            .get(link)
+            .get(link, { timeout: 20000 })
             .then(data => resolve(data))
             .catch(() => resolve(null));
     });

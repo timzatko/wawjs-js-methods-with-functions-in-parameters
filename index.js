@@ -16,6 +16,8 @@ from(request.get(url + '/bm/docs/Web/JavaScript/Reference/Methods_Index'))
     .pipe(getAllMethodsInformation())
     .pipe(filterMethodsWithFunctionParameter())
     .subscribe(methods => {
+        console.log('Writing results...');
+
         methods.sort((a, b) => a.name.toString().localeCompare(b.name));
 
         const names = methods.map(
